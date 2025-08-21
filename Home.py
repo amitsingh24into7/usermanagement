@@ -223,16 +223,28 @@ if submitted:
                 conn.commit()
 
             # Generate WhatsApp message
-            message = (
-                f"🎉 Welcome to {app_urls[app_slug]['name']}!\n\n"
-                f"📧 *Username:* {username}\n"
-                f"🔐 *Password:* {password}\n"
-                f"📅 *Valid Until:* {valid_until}\n\n"
-                f"🔗 Login: {login_url}\n\n"
-                f"Best of luck! 🚀"
-            )
-            whatsapp_link = f"https://wa.me/{mobile.replace('+', '')}?text={message.replace(' ', '%20').replace('\n', '%0A')}"
+            # Step 1: Build message
+            message_parts = [
+                f"🎉 Welcome to {app_urls[app_slug]['name']}!",
+                "",
+                f"📧 *Username:* {username}",
+                f"🔐 *Password:* {password}",
+                f"📅 *Valid Until:* {valid_until}",
+                "",
+                f"🔗 Login: {login_url}",
+                "",
+                "Best of luck! 🚀"
+            ]
+            message = "\n".join(message_parts)
 
+            # Step 2: URL encode (replace space and newline)
+            message_encoded = message.replace(" ", "%20").replace("\n", "%0A")
+
+            # Step 3: Clean mobile number
+            mobile_clean = mobile.replace("+", "")
+
+            # Step 4: Build WhatsApp link (now safe from f-string issues)
+            whatsapp_link = f"https://wa.me/{mobile_clean}?text={message_encoded}"
             st.success("✅ User added successfully!")
             st.markdown(f"<a href='{whatsapp_link}' target='_blank' style='font-size:18px;'>📤 Send WhatsApp Message</a>", unsafe_allow_html=True)
             st.balloons()
