@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usermanagement-deployment
+  labels:
+    app: usermanagement
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: usermanagement
+  template:
+    metadata:
+      labels:
+        app: usermanagement
+    spec:
+      containers:
+      - name: usermanagement
+        image: akhilbmenon/usermanagement:${BUILD_NUMBER}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8501
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: usermanagement-service
+  labels:
+    app: usermanagement
+spec:
+  selector:
+    app: usermanagement
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8501
+    nodePort: 30005 
+  type: NodePort
