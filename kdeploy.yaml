@@ -41,5 +41,5 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 8501
-    nodePort: 30005 
+    nodePort: 30007 
   type: NodePort
